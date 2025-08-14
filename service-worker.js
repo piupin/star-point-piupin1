@@ -1,4 +1,4 @@
-const CACHE_NAME = 'stars-cache-v2';
+const CACHE_NAME = 'stars-cache-v3';
 const URLS_TO_CACHE = [
   './',
   './index.html',
@@ -7,48 +7,44 @@ const URLS_TO_CACHE = [
   './icons/icon-512x512.png'
 ];
 
-// Install Service Worker and cache files
+// Install and cache files
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[Service Worker] Caching files');
-      return cache.addAll(URLS_TO_CACHE);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(URLS_TO_CACHE))
   );
+  self.skipWaiting();
 });
 
-// Activate Service Worker and remove old caches
+// Activate and remove old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((name) => {
-          if (name !== CACHE_NAME) {
-            console.log('[Service Worker] Deleting old cache:', name);
-            return caches.delete(name);
-          }
-        })
-      );
-    })
+    caches.keys().then((names) => Promise.all(
+      names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n))
+    ))
   );
+  self.clients.claim();
 });
 
-// Fetch from cache first, fallback to network
+// Fetch with SPA fallback
 self.addEventListener('fetch', (event) => {
+  if (event.request.mode === 'navigate') {
+    // Always return index.html for navigation
+    event.respondWith(
+      caches.match('./index.html').then((cachedPage) => {
+        return cachedPage || fetch('./index.html');
+      })
+    );
+    return;
+  }
+
+  // Normal cache-first strategy for other files
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // Return cached file or fetch from network
       return response || fetch(event.request).then((fetchResponse) => {
         return caches.open(CACHE_NAME).then((cache) => {
-          // Cache new files for offline use
           cache.put(event.request, fetchResponse.clone());
           return fetchResponse;
         });
-      }).catch(() => {
-        // Fallback page if offline and file not cached
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
-        }
       });
     })
   );
