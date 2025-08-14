@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Stars 🌟</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#FFD700" />
+  <link rel="icon" href="icons/icon-192x192.png" sizes="192x192" />
+  <link rel="icon" href="icons/icon-512x512.png" sizes="512x512" />
+
+  <style>
+    :root {
+      --bg: #fff8e1;
+      --accent: #ffeb3b;
+      --accent-2: #ffcc80;
+      --text: #333;
+      --title: #ff5722;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 12px;
+      font-family: Comic Sans MS, system-ui, -apple-system, Segoe UI, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      text-align: center;
+    }
+    h1 {
+      margin: 10px 0 14px;
+      color: var(--title);
+      font-size: 1.7rem;
+    }
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,.15);
+    }
+    thead th, tbody td {
+      border: 2px solid var(--accent-2);
+      padding: 8px;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+    thead th {
+      background: var(--accent);
+      color: var(--text);
+      text-align: center;
+    }
+    tbody td { text-align: center; }
+    tbody tr:nth-child(even) { background: #fffde7; }
+    tbody tr:hover { background: #ffe082; }
+
+    /* Column sizing & alignment */
+    th:nth-child(1), td:nth-child(1) { width: 44px; text-align: center; }
+    th:nth-child(2), td:nth-child(2) {
+      width: 28%;
+      text-align: left;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    th:nth-child(3), td:nth-child(3) { width: 52%; text-align: left; }
+    th:nth-child(4), td:nth-child(4) { width: 60px; text-align: center; }
+
+    .stars { font-size: 20px; word-break: break-word; text-align: left; }
+
+    .hint {
+      font-size: 12px;
+      opacity: .75;
+      margin: 10px 0 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🌟 Student Star Points 🌟</h1>
+
+    <table id="studentTable" aria-live="polite">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Name</th>
+          <th>Stars</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="4">Loading…</td></tr>
+      </tbody>
+    </table>
+
+    <p class="hint">Tip: Works offline after first load. Add to Home Screen to install.</p>
+  </div>
+
+  <!-- Your app logic -->
+  <script src="script.js"></script>
+
+  <!-- Register Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(() => console.log('SW registered'))
+        .catch(err => console.error('SW registration failed', err));
+    }
+  </script>
+</body>
+</html>
