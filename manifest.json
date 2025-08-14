@@ -1,10 +1,10 @@
 {
   "name": "Student Stars",
-  "short_name": "Stars",
+  "short_name": "",
   "start_url": ".",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#fff8e1",
-  "theme_color": "#FFD700",
+  "theme_color": "#fff8e1",
   "icons": [
     {
       "src": "icons/icon-192x192.png",
